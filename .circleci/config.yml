@@ -60,3 +60,6 @@ jobs:
             docker build -t antonhlinisty/tempvs-profile .
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push antonhlinisty/tempvs-profile
+            docker login --email=$HEROKU_LOGIN --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
+            docker build --rm=false -t registry.heroku.com/tempvs-profile/web .
+            docker push registry.heroku.com/tempvs-profile/web:latest
