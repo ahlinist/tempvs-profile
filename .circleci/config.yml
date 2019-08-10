@@ -56,7 +56,6 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
-            . build/libs/*.jar
-            docker build -t antonhlinisty/tempvs-profile .
+            ./gradlew build docker
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push antonhlinisty/tempvs-profile
