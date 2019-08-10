@@ -1,3 +1,5 @@
 FROM circleci/openjdk:11-jdk
-
-ENTRYPOINT [ "echo" ]
+COPY ./build/libs/*.jar /usr/app/
+WORKDIR /usr/app
+EXPOSE 8087
+ENTRYPOINT ["java","-jar","tempvs-profile.jar"]

@@ -46,8 +46,8 @@ dependencyManagement {
 }
 
 bootJar {
-    archiveBaseName = 'tempvs-stash'
-    version =  project.version
+	archiveBaseName = 'tempvs-profile'
+	version = ''
 }
 
 task stage() {
