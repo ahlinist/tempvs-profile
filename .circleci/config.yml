@@ -47,7 +47,7 @@ jobs:
       #    when: always
       #- store_test_results:
       #    path: ~/integration-test
-      - run: ./gradlew clean stage -x test
+      - run: ./gradlew clean build -x test
       #store the build war
       - store_artifacts:
           path: ~/repo/build/libs

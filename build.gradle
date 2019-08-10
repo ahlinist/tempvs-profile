@@ -96,7 +96,3 @@ configurations {
 	integrationTestImplementation.extendsFrom testImplementation
 	integrationTestRuntime.extendsFrom testRuntime
 }
-
-task stage() {
-	dependsOn build
-}
