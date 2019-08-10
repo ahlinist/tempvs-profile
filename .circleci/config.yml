@@ -51,3 +51,12 @@ jobs:
       #store the build war
       - store_artifacts:
           path: ~/repo/build/libs
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and push Docker image
+          command: |
+            . build/libs/*.jar
+            docker build -t antonhlinisty/tempvs-profile .
+            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+            docker push antonhlinisty/tempvs-profile
