@@ -35,29 +35,29 @@ jobs:
           command: |
             ./gradlew test
       - run:
-          name: Save test results
+          name: Save unit tests results
           command: |
             mkdir -p ~/unit-test/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/unit-test/ \;
           when: always
       - store_test_results:
           path: ~/unit-test
-      # run integration tests!
-      #- run: ./gradlew integrationTest
-      #    name: Run integration tests
-      #- run:
-      #    name: Save integration-test results
-      #    command: |
-      #      mkdir -p ~/integration-test/
-      #      find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/integration-test/ \;
-      #    when: always
-      #- store_test_results:
-      #    path: ~/integration-test
+      - run:
+          name: Run integration tests
+          command: |
+            ./gradlew integrationTest
+      - run:
+          name: Save integration tests results
+          command: |
+            mkdir -p ~/integration-test/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/integration-test/ \;
+          when: always
+      - store_test_results:
+          path: ~/integration-test
       - run:
           name: Build fat jar
           command: |
             ./gradlew clean build -x test
-      #store the build jar
       - store_artifacts:
           path: ~/repo/build/libs
       - setup_remote_docker:
