@@ -53,8 +53,10 @@ jobs:
       #    when: always
       #- store_test_results:
       #    path: ~/integration-test
-      - run: ./gradlew clean build -x test
+      - run:
           name: Build fat jar
+          command: |
+            ./gradlew clean build -x test
       #store the build jar
       - store_artifacts:
           path: ~/repo/build/libs
