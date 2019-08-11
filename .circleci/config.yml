@@ -27,8 +27,8 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-      # run tests!
       - run: ./gradlew test
+          name: Run unit tests
       - run:
           name: Save test results
           command: |
@@ -39,6 +39,7 @@ jobs:
           path: ~/unit-test
       # run integration tests!
       #- run: ./gradlew integrationTest
+      #    name: Run integration tests
       #- run:
       #    name: Save integration-test results
       #    command: |
@@ -48,16 +49,20 @@ jobs:
       #- store_test_results:
       #    path: ~/integration-test
       - run: ./gradlew clean build -x test
-      #store the build war
+          name: Build fat jar
+      #store the build jar
       - store_artifacts:
           path: ~/repo/build/libs
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Build and push Docker image to dockerhub
+          name: Build docker image
           command: |
             cp build/libs/*.jar .
             docker build -t antonhlinisty/$HEROKU_APP_NAME .
+      - run:
+          name: Push docker image to dockerhub
+          command: |
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push antonhlinisty/$HEROKU_APP_NAME
       - run:
