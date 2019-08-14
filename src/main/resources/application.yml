@@ -16,6 +16,8 @@ spring:
           use_jdbc_metadata_defaults: false
         jdbc:
           time_zone: UTC
+authorization:
+  token: ${TOKEN}
 eureka:
   client:
     serviceUrl:
