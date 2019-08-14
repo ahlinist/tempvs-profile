@@ -17,6 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
+    private static final int MAX_CLUB_PROFILE_COUNT = 10;
+
     private final ProfileRepository profileRepository;
     private final UserHolder userHolder;
 
@@ -28,6 +30,12 @@ public class ProfileServiceImpl implements ProfileService {
         if (profile.getType() == Type.USER) {
             if(findUserProfileByUserId(userId).isPresent()) {
                 throw new IllegalStateException(String.format("User with id %d already has user profile", userId));
+            }
+        }
+
+        if (profile.getType() == Type.CLUB) {
+            if(countClubProfilesByUserId(userId) >= MAX_CLUB_PROFILE_COUNT) {
+                throw new IllegalStateException(String.format("User with id %d has too many club profiles", userId));
             }
         }
 
@@ -49,6 +57,13 @@ public class ProfileServiceImpl implements ProfileService {
             @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     })
     private Optional<Profile> findUserProfileByUserId(Long userId) {
-        return profileRepository.findUserProfileByUserId(userId);
+        return profileRepository.findByTypeAndUserId(Type.USER, userId);
+    }
+
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
+    private int countClubProfilesByUserId(Long userId) {
+        return profileRepository.countByTypeAndUserId(Type.CLUB, userId);
     }
 }

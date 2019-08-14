@@ -40,11 +40,13 @@ public class ProfileServiceTest {
         when(userHolder.getUser()).thenReturn(user);
         when(user.getId()).thenReturn(userId);
         when(profile.getType()).thenReturn(Type.CLUB);
+        when(profileRepository.countByTypeAndUserId(Type.CLUB, userId)).thenReturn(9);
         when(profileRepository.save(profile)).thenReturn(profile);
 
         Profile result = profileService.create(profile);
 
         verify(userHolder).getUser();
+        verify(profileRepository).countByTypeAndUserId(Type.CLUB, userId);
         verify(profileRepository).save(profile);
         verifyNoMoreInteractions(profileRepository, userHolder);
 
@@ -58,13 +60,13 @@ public class ProfileServiceTest {
         when(userHolder.getUser()).thenReturn(user);
         when(user.getId()).thenReturn(userId);
         when(profile.getType()).thenReturn(Type.USER);
-        when(profileRepository.findUserProfileByUserId(userId)).thenReturn(Optional.empty());
+        when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.empty());
         when(profileRepository.save(profile)).thenReturn(profile);
 
         Profile result = profileService.create(profile);
 
         verify(userHolder).getUser();
-        verify(profileRepository).findUserProfileByUserId(userId);
+        verify(profileRepository).findByTypeAndUserId(Type.USER, userId);
         verify(profileRepository).save(profile);
         verifyNoMoreInteractions(profileRepository, userHolder);
 
@@ -78,7 +80,19 @@ public class ProfileServiceTest {
         when(userHolder.getUser()).thenReturn(user);
         when(user.getId()).thenReturn(userId);
         when(profile.getType()).thenReturn(Type.USER);
-        when(profileRepository.findUserProfileByUserId(userId)).thenReturn(Optional.of(profile));
+        when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.of(profile));
+
+        profileService.create(profile);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCreateClubProfileOutOfLimits() {
+        Long userId = 1L;
+
+        when(userHolder.getUser()).thenReturn(user);
+        when(user.getId()).thenReturn(userId);
+        when(profile.getType()).thenReturn(Type.CLUB);
+        when(profileRepository.countByTypeAndUserId(Type.CLUB, userId)).thenReturn(10);
 
         profileService.create(profile);
     }

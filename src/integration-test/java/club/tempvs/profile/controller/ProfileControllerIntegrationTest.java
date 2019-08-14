@@ -39,7 +39,7 @@ public class ProfileControllerIntegrationTest {
     private MockMvc mvc;
 
     @Test
-    public void testCreateProfile() throws Exception {
+    public void testCreateUserProfile() throws Exception {
         File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
         String userInfoValue = buildUserInfoValue(1L);
@@ -55,6 +55,28 @@ public class ProfileControllerIntegrationTest {
                     .andExpect(jsonPath("lastName", is("last name")))
                     .andExpect(jsonPath("type", is("USER")))
                     .andExpect(jsonPath("location", is("gotham city")));
+    }
+
+    @Test
+    public void testCreateSecondUserProfile() throws Exception {
+        File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
+        String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
+        String userInfoValue = buildUserInfoValue(1L);
+
+        mvc.perform(post("/api/profile")
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(createProfileJson)
+                .header(USER_INFO_HEADER, userInfoValue)
+                .header(AUTHORIZATION_HEADER, TOKEN));
+
+        mvc.perform(post("/api/profile")
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(createProfileJson)
+                .header(USER_INFO_HEADER, userInfoValue)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                .andExpect(status().isConflict());
     }
 
     @SneakyThrows
