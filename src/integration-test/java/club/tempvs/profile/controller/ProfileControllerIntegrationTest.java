@@ -5,7 +5,6 @@ import club.tempvs.profile.domain.Profile;
 import club.tempvs.profile.domain.Profile.Type;
 import club.tempvs.profile.dto.UserInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
