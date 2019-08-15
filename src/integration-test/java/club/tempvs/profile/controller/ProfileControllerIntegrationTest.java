@@ -103,8 +103,7 @@ public class ProfileControllerIntegrationTest {
                     .andExpect(jsonPath("type", is("USER")));
     }
 
-    @SneakyThrows
-    private String buildUserInfoValue(Long id) {
+    private String buildUserInfoValue(Long id) throws Exception {
         UserInfoDto userInfo = new UserInfoDto();
         userInfo.setUserId(id);
         return objectMapper.writeValueAsString(userInfo);
