@@ -1,5 +1,8 @@
 package club.tempvs.profile.controller;
 
+import club.tempvs.profile.EntityHelper;
+import club.tempvs.profile.domain.Profile;
+import club.tempvs.profile.domain.Profile.Type;
 import club.tempvs.profile.dto.UserInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -18,6 +21,7 @@ import java.nio.file.Files;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,8 +37,9 @@ public class ProfileControllerIntegrationTest {
     private static final String TOKEN = "df41895b9f26094d0b1d39b7bdd9849e"; //security_token as MD5
 
     @Autowired
+    private EntityHelper entityHelper;
+    @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private MockMvc mvc;
 
@@ -53,8 +58,7 @@ public class ProfileControllerIntegrationTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("firstName", is("first name")))
                     .andExpect(jsonPath("lastName", is("last name")))
-                    .andExpect(jsonPath("type", is("USER")))
-                    .andExpect(jsonPath("location", is("gotham city")));
+                    .andExpect(jsonPath("type", is("USER")));
     }
 
     @Test
@@ -77,6 +81,26 @@ public class ProfileControllerIntegrationTest {
                 .header(USER_INFO_HEADER, userInfoValue)
                 .header(AUTHORIZATION_HEADER, TOKEN))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void testGetUserProfile() throws Exception {
+        Long userId = 1L;
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String userInfoValue = buildUserInfoValue(userId);
+
+        Profile profile = entityHelper.createProfile(userId, firstName, lastName, Type.USER);
+
+        mvc.perform(get("/api/profile/" + profile.getId())
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .header(USER_INFO_HEADER, userInfoValue)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("firstName", is(firstName)))
+                    .andExpect(jsonPath("lastName", is(lastName)))
+                    .andExpect(jsonPath("type", is("USER")));
     }
 
     @SneakyThrows

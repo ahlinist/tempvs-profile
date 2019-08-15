@@ -46,6 +46,19 @@ public class ProfileServiceImpl implements ProfileService {
         return save(profile);
     }
 
+    @Override
+    public Profile get(Long id) {
+        return fetchProfile(id);
+    }
+
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
+    private Profile fetchProfile(Long id) {
+        return profileRepository.findById(id)
+                .get();
+    }
+
     @HystrixCommand(commandProperties = {
             @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     })

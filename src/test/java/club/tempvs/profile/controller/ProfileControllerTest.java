@@ -44,4 +44,20 @@ public class ProfileControllerTest {
 
         assertEquals("ProfileDto is returned", profileDto, result);
     }
+
+    @Test
+    public void testGet() {
+        Long id = 1L;
+
+        when(profileService.get(id)).thenReturn(profile);
+        when(conversionService.convert(profile, ProfileDto.class)).thenReturn(profileDto);
+
+        ProfileDto result = profileController.get(id);
+
+        verify(profileService).get(id);
+        verify(conversionService).convert(profile, ProfileDto.class);
+        verifyNoMoreInteractions(conversionService, profileService);
+
+        assertEquals("ProfileDto is returned", profileDto, result);
+    }
 }

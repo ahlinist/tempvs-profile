@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -95,5 +96,28 @@ public class ProfileServiceTest {
         when(profileRepository.countByTypeAndUserId(Type.CLUB, userId)).thenReturn(10);
 
         profileService.create(profile);
+    }
+
+    @Test
+    public void testGet() {
+        Long id = 1L;
+
+        when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
+
+        Profile result = profileService.get(id);
+
+        verify(profileRepository).findById(id);
+        verifyNoMoreInteractions(profileRepository);
+
+        assertEquals("Profile object is returned", profile, result);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testGetForMissingProfile() {
+        Long id = 1L;
+
+        when(profileRepository.findById(id)).thenReturn(Optional.empty());
+
+        profileService.get(id);
     }
 }
