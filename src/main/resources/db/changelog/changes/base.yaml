@@ -1,0 +1,161 @@
+databaseChangeLog:
+- changeSet:
+    id: 1566146120317-1
+    author: albvs (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: passportPK
+            name: id
+            type: BIGINT
+        - column:
+            name: created_date
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: passport
+- changeSet:
+    id: 1566146120317-2
+    author: albvs (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              primaryKey: true
+            name: passport_id
+            type: BIGINT
+        - column:
+            name: items
+            type: BIGINT
+        - column:
+            constraints:
+              primaryKey: true
+            name: items_order
+            type: INTEGER
+        tableName: passport_items
+- changeSet:
+    id: 1566146120317-3
+    author: albvs (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              primaryKey: true
+              primaryKeyName: profilePK
+            name: id
+            type: BIGINT
+        - column:
+            name: alias
+            type: VARCHAR(255)
+        - column:
+            name: created_date
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: first_name
+            type: VARCHAR(255)
+        - column:
+            name: is_active
+            type: BOOLEAN
+        - column:
+            name: last_name
+            type: VARCHAR(255)
+        - column:
+            name: location
+            type: VARCHAR(255)
+        - column:
+            name: nick_name
+            type: VARCHAR(255)
+        - column:
+            name: period
+            type: VARCHAR(255)
+        - column:
+            name: profile_email
+            type: VARCHAR(255)
+        - column:
+            name: type
+            type: VARCHAR(255)
+        - column:
+            name: user_id
+            type: BIGINT
+        tableName: profile
+- changeSet:
+    id: 1566146120317-4
+    author: albvs (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              primaryKey: true
+            name: profile_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: passports_id
+            type: BIGINT
+        - column:
+            constraints:
+              primaryKey: true
+            name: passports_order
+            type: INTEGER
+        tableName: profile_passports
+- changeSet:
+    id: 1566146120317-5
+    author: albvs (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: passports_id
+        constraintName: UK_jcvbn3escnfh4e9e0yn7iakax
+        tableName: profile_passports
+- changeSet:
+    id: 1566146120317-6
+    author: albvs (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: profile_id
+        baseTableName: profile_passports
+        constraintName: FK4dc4p67070ubo6u1v3ykpneol
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: profile
+        validate: true
+- changeSet:
+    id: 1566146120317-7
+    author: albvs (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: passports_id
+        baseTableName: profile_passports
+        constraintName: FKib0ji4j5f1ncfr5dtwjopg097
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: passport
+        validate: true
+- changeSet:
+    id: 1566146120317-8
+    author: albvs (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: passport_id
+        baseTableName: passport_items
+        constraintName: FKsre85gece1ayjqlgil8upktm3
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: passport
+        validate: true
+
