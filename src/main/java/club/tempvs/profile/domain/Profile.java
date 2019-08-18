@@ -24,7 +24,7 @@ import java.util.List;
 public class Profile {
 
     @Id
-    @GeneratedValue(strategy= IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @NotNull
     private Long userId;
@@ -36,7 +36,6 @@ public class Profile {
     private String location;
     private String alias;
     private Boolean isActive;
-    private String clubName;
     @Enumerated(STRING)
     private Period period;
     @Size(max = 20)

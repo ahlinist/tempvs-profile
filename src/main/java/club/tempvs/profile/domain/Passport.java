@@ -1,5 +1,8 @@
 package club.tempvs.profile.domain;
 
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,14 +20,14 @@ import java.util.List;
 public class Passport {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @NotBlank
     private String name;
     private String description;
     @Size(max = 20)
     @OrderColumn
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = EAGER)
     private List<Long> items = new ArrayList<>();
     @CreatedDate
     private Instant createdDate;
