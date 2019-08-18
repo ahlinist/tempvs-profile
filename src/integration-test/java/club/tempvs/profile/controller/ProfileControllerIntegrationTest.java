@@ -83,7 +83,7 @@ public class ProfileControllerIntegrationTest {
     }
 
     @Test
-    public void testGetUserProfile() throws Exception {
+    public void testGetProfileForUserType() throws Exception {
         Long userId = 1L;
         String firstName = "firstName";
         String lastName = "lastName";
@@ -100,6 +100,39 @@ public class ProfileControllerIntegrationTest {
                     .andExpect(jsonPath("firstName", is(firstName)))
                     .andExpect(jsonPath("lastName", is(lastName)))
                     .andExpect(jsonPath("type", is("USER")));
+    }
+
+    @Test
+    public void testGetUserProfile() throws Exception {
+        Long userId = 1L;
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String userInfoValue = buildUserInfoValue(userId);
+
+        entityHelper.createProfile(userId, firstName, lastName, Type.USER);
+
+        mvc.perform(get("/api/user-profile/")
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .header(USER_INFO_HEADER, userInfoValue)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("firstName", is(firstName)))
+                .andExpect(jsonPath("lastName", is(lastName)))
+                .andExpect(jsonPath("type", is("USER")));
+    }
+
+    @Test
+    public void testGetUserProfileForMissingOne() throws Exception {
+        Long userId = 1L;
+        String userInfoValue = buildUserInfoValue(userId);
+
+        mvc.perform(get("/api/user-profile")
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .header(USER_INFO_HEADER, userInfoValue)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                .andExpect(status().isNotFound());
     }
 
     private String buildUserInfoValue(Long id) throws Exception {

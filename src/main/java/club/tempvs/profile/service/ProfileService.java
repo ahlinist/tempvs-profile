@@ -7,4 +7,6 @@ public interface ProfileService {
     Profile create(Profile profile);
 
     Profile get(Long id);
+
+    Profile getUserProfile();
 }

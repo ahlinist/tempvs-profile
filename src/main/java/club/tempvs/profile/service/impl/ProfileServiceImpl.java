@@ -51,6 +51,13 @@ public class ProfileServiceImpl implements ProfileService {
         return fetchProfile(id);
     }
 
+    @Override
+    public Profile getUserProfile() {
+        User user = userHolder.getUser();
+        return findUserProfileByUserId(user.getId())
+                .get();
+    }
+
     @HystrixCommand(commandProperties = {
             @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     })

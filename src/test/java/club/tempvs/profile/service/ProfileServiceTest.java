@@ -120,4 +120,31 @@ public class ProfileServiceTest {
 
         profileService.get(id);
     }
+
+    @Test
+    public void testGetUserProfile() {
+        Long userId = 1L;
+
+        when(userHolder.getUser()).thenReturn(user);
+        when(user.getId()).thenReturn(userId);
+        when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.of(profile));
+
+        Profile result = profileService.getUserProfile();
+
+        verify(profileRepository).findByTypeAndUserId(Type.USER, userId);
+        verifyNoMoreInteractions(profileRepository);
+
+        assertEquals("Profile object is returned", profile, result);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testGetUserProfileForNoResult() {
+        Long userId = 1L;
+
+        when(userHolder.getUser()).thenReturn(user);
+        when(user.getId()).thenReturn(userId);
+        when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.empty());
+
+        profileService.getUserProfile();
+    }
 }
