@@ -28,7 +28,7 @@ public class ProfileController {
         return mvcConversionService.convert(profile, ProfileDto.class);
     }
 
-    @GetMapping("/user-profile")
+    @GetMapping("/profile")
     public ProfileDto getUserProfile() {
         Profile profile = profileService.getUserProfile();
         return mvcConversionService.convert(profile, ProfileDto.class);

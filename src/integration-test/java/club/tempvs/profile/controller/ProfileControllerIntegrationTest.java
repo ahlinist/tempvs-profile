@@ -111,7 +111,7 @@ public class ProfileControllerIntegrationTest {
 
         entityHelper.createProfile(userId, firstName, lastName, Type.USER);
 
-        mvc.perform(get("/api/user-profile/")
+        mvc.perform(get("/api/profile/")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .header(USER_INFO_HEADER, userInfoValue)
@@ -127,7 +127,7 @@ public class ProfileControllerIntegrationTest {
         Long userId = 1L;
         String userInfoValue = buildUserInfoValue(userId);
 
-        mvc.perform(get("/api/user-profile")
+        mvc.perform(get("/api/profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .header(USER_INFO_HEADER, userInfoValue)
