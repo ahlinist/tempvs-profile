@@ -12,6 +12,7 @@ public class UserInfoToUserConverter implements Converter<UserInfoDto, User> {
     public User convert(UserInfoDto source) {
         User target = new User();
         target.setId(source.getUserId());
+        target.setProfileId(source.getProfileId());
         return target;
     }
 }

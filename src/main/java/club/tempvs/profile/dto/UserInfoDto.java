@@ -6,4 +6,5 @@ import lombok.Data;
 public class UserInfoDto {
 
     private Long userId;
+    private Long profileId;
 }
