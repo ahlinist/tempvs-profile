@@ -3,6 +3,7 @@ package club.tempvs.profile.service;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+import club.tempvs.profile.component.ProfileValidator;
 import club.tempvs.profile.domain.Profile.Type;
 import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.dao.ProfileRepository;
@@ -28,6 +29,8 @@ public class ProfileServiceTest {
     private ProfileRepository profileRepository;
     @Mock
     private UserHolder userHolder;
+    @Mock
+    private ProfileValidator profileValidator;
 
     @Mock
     private Profile profile;
@@ -69,7 +72,8 @@ public class ProfileServiceTest {
         verify(userHolder).getUser();
         verify(profileRepository).findByTypeAndUserId(Type.USER, userId);
         verify(profileRepository).save(profile);
-        verifyNoMoreInteractions(profileRepository, userHolder);
+        verify(profileValidator).validateUserProfile(profile);
+        verifyNoMoreInteractions(profileRepository, userHolder, profileValidator);
 
         assertEquals("Profile object is returned", profile, result);
     }

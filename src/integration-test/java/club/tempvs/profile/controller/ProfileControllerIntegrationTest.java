@@ -17,6 +17,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Locale;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -116,10 +117,10 @@ public class ProfileControllerIntegrationTest {
                 .contentType(APPLICATION_JSON_VALUE)
                 .header(USER_INFO_HEADER, userInfoValue)
                 .header(AUTHORIZATION_HEADER, TOKEN))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("firstName", is(firstName)))
-                .andExpect(jsonPath("lastName", is(lastName)))
-                .andExpect(jsonPath("type", is("USER")));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("firstName", is(firstName)))
+                    .andExpect(jsonPath("lastName", is(lastName)))
+                    .andExpect(jsonPath("type", is("USER")));
     }
 
     @Test
@@ -138,6 +139,7 @@ public class ProfileControllerIntegrationTest {
     private String buildUserInfoValue(Long id) throws Exception {
         UserInfoDto userInfo = new UserInfoDto();
         userInfo.setUserId(id);
+        userInfo.setLang(Locale.ENGLISH.getLanguage());
         return objectMapper.writeValueAsString(userInfo);
     }
 }

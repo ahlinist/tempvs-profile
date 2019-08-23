@@ -1,5 +1,6 @@
 package club.tempvs.profile.service.impl;
 
+import club.tempvs.profile.component.ProfileValidator;
 import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.dao.ProfileRepository;
 import club.tempvs.profile.domain.Profile;
@@ -20,6 +21,7 @@ public class ProfileServiceImpl implements ProfileService {
     private static final int MAX_CLUB_PROFILE_COUNT = 10;
 
     private final ProfileRepository profileRepository;
+    private final ProfileValidator profileValidator;
     private final UserHolder userHolder;
 
     @Override
@@ -28,6 +30,8 @@ public class ProfileServiceImpl implements ProfileService {
         Long userId = user.getId();
 
         if (profile.getType() == Type.USER) {
+            profileValidator.validateUserProfile(profile);
+
             if(findUserProfileByUserId(userId).isPresent()) {
                 throw new IllegalStateException(String.format("User with id %d already has user profile", userId));
             }

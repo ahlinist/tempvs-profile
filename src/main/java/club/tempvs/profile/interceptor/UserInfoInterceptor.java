@@ -7,11 +7,13 @@ import club.tempvs.profile.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +34,8 @@ public class UserInfoInterceptor implements HandlerInterceptor {
         UserInfoDto userInfoDto = objectMapper.readValue(userInfoHeaderValue, UserInfoDto.class);
         User user = userInfoToUserConverter.convert(userInfoDto);
         userHolder.setUser(user);
+        Locale locale = new Locale(user.getLang());
+        LocaleContextHolder.setLocale(locale);
 
         return true;
     }

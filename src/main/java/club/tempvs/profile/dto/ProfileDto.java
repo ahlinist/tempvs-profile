@@ -4,7 +4,6 @@ import club.tempvs.profile.domain.Profile.Type;
 import club.tempvs.profile.domain.Profile.Period;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
@@ -14,7 +13,6 @@ public class ProfileDto {
 
     private Long id;
     private Long userId;
-    @NotBlank
     private String firstName;
     private String lastName;
     private String nickName;
