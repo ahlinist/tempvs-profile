@@ -20,7 +20,6 @@ public class ProfileDto {
     private String location;
     private String alias;
     private Boolean isActive;
-    private String clubName;
     private Period period;
     private List<PassportDto> passports;
     @NotNull
