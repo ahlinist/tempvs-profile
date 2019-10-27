@@ -62,6 +62,19 @@ public class ProfileControllerIntegrationTest {
     }
 
     @Test
+    public void testCreateUserProfileBeingUnauthenticated() throws Exception {
+        File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
+        String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
+
+        mvc.perform(post("/api/profile")
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(createProfileJson)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     public void testCreateSecondUserProfile() throws Exception {
         File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
@@ -72,7 +85,8 @@ public class ProfileControllerIntegrationTest {
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)
                 .header(USER_INFO_HEADER, userInfoValue)
-                .header(AUTHORIZATION_HEADER, TOKEN));
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                .andExpect(status().isOk());
 
         mvc.perform(post("/api/profile")
                 .accept(APPLICATION_JSON_VALUE)
@@ -88,14 +102,12 @@ public class ProfileControllerIntegrationTest {
         Long userId = 1L;
         String firstName = "firstName";
         String lastName = "lastName";
-        String userInfoValue = buildUserInfoValue(userId);
 
         Profile profile = entityHelper.createProfile(userId, firstName, lastName, Type.USER);
 
         mvc.perform(get("/api/profile/" + profile.getId())
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
-                .header(USER_INFO_HEADER, userInfoValue)
                 .header(AUTHORIZATION_HEADER, TOKEN))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("firstName", is(firstName)))
@@ -121,6 +133,16 @@ public class ProfileControllerIntegrationTest {
                     .andExpect(jsonPath("firstName", is(firstName)))
                     .andExpect(jsonPath("lastName", is(lastName)))
                     .andExpect(jsonPath("type", is("USER")));
+    }
+
+    @Test
+    public void testGetUserProfileBeingUnauthenticated() throws Exception {
+
+        mvc.perform(get("/api/profile")
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

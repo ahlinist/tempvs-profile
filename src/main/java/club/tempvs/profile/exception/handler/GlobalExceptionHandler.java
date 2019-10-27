@@ -29,12 +29,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> returnInternalError(Exception e) {
-        processException(e);
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
-    }
-
     @ExceptionHandler(HystrixRuntimeException.class)
     @ResponseStatus(SERVICE_UNAVAILABLE)
     public ResponseEntity<String> returnServiceUnavailable(HystrixRuntimeException e) {
