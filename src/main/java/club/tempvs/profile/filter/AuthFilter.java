@@ -1,6 +1,5 @@
 package club.tempvs.profile.filter;
 
-
 import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.dto.TempvsPrincipal;
 import club.tempvs.profile.model.User;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -52,8 +52,9 @@ public class AuthFilter extends GenericFilterBean {
             User user = new User(principal.getUserId(), principal.getCurrentProfileId(), principal.getLang());
             userHolder.setUser(user);
 
-            String lang = principal.getLang();
-            LocaleContextHolder.setLocale(new Locale(lang));
+            Optional.ofNullable(principal.getLang())
+                    .map(Locale::new)
+                    .ifPresent(LocaleContextHolder::setLocale);
         }
 
         chain.doFilter(httpRequest, httpResponse);
