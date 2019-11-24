@@ -6,5 +6,9 @@ public interface Scope {
         interface UserProfile {
 
         }
+
+        interface ClubProfile {
+
+        }
     }
 }
