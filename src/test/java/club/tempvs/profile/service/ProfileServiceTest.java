@@ -8,7 +8,6 @@ import club.tempvs.profile.domain.Profile.Type;
 import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.dao.ProfileRepository;
 import club.tempvs.profile.domain.Profile;
-import club.tempvs.profile.model.User;
 import club.tempvs.profile.service.impl.ProfileServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,22 +33,19 @@ public class ProfileServiceTest {
 
     @Mock
     private Profile profile;
-    @Mock
-    private User user;
 
     @Test
     public void testCreateClubProfile() {
         Long userId = 1L;
 
-        when(userHolder.getUser()).thenReturn(user);
-        when(user.getId()).thenReturn(userId);
+        when(userHolder.getUserId()).thenReturn(userId);
         when(profile.getType()).thenReturn(Type.CLUB);
         when(profileRepository.countByTypeAndUserId(Type.CLUB, userId)).thenReturn(9);
         when(profileRepository.save(profile)).thenReturn(profile);
 
         Profile result = profileService.create(profile);
 
-        verify(userHolder).getUser();
+        verify(userHolder).getUserId();
         verify(profileRepository).countByTypeAndUserId(Type.CLUB, userId);
         verify(profileRepository).save(profile);
         verifyNoMoreInteractions(profileRepository, userHolder);
@@ -61,15 +57,14 @@ public class ProfileServiceTest {
     public void testCreateUserProfile() {
         Long userId = 1L;
 
-        when(userHolder.getUser()).thenReturn(user);
-        when(user.getId()).thenReturn(userId);
+        when(userHolder.getUserId()).thenReturn(userId);
         when(profile.getType()).thenReturn(Type.USER);
         when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.empty());
         when(profileRepository.save(profile)).thenReturn(profile);
 
         Profile result = profileService.create(profile);
 
-        verify(userHolder).getUser();
+        verify(userHolder).getUserId();
         verify(profileRepository).findByTypeAndUserId(Type.USER, userId);
         verify(profileRepository).save(profile);
         verify(profileValidator).validateUserProfile(profile);
@@ -82,8 +77,7 @@ public class ProfileServiceTest {
     public void testCreateUserProfileWhenTheOneAlreadyExists() {
         Long userId = 1L;
 
-        when(userHolder.getUser()).thenReturn(user);
-        when(user.getId()).thenReturn(userId);
+        when(userHolder.getUserId()).thenReturn(userId);
         when(profile.getType()).thenReturn(Type.USER);
         when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.of(profile));
 
@@ -94,8 +88,7 @@ public class ProfileServiceTest {
     public void testCreateClubProfileOutOfLimits() {
         Long userId = 1L;
 
-        when(userHolder.getUser()).thenReturn(user);
-        when(user.getId()).thenReturn(userId);
+        when(userHolder.getUserId()).thenReturn(userId);
         when(profile.getType()).thenReturn(Type.CLUB);
         when(profileRepository.countByTypeAndUserId(Type.CLUB, userId)).thenReturn(10);
 
@@ -129,8 +122,7 @@ public class ProfileServiceTest {
     public void testGetUserProfile() {
         Long userId = 1L;
 
-        when(userHolder.getUser()).thenReturn(user);
-        when(user.getId()).thenReturn(userId);
+        when(userHolder.getUserId()).thenReturn(userId);
         when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.of(profile));
 
         Profile result = profileService.getUserProfile();
@@ -145,8 +137,7 @@ public class ProfileServiceTest {
     public void testGetUserProfileForNoResult() {
         Long userId = 1L;
 
-        when(userHolder.getUser()).thenReturn(user);
-        when(user.getId()).thenReturn(userId);
+        when(userHolder.getUserId()).thenReturn(userId);
         when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.empty());
 
         profileService.getUserProfile();

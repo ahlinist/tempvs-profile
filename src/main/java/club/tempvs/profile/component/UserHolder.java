@@ -1,16 +1,16 @@
 package club.tempvs.profile.component;
 
-import club.tempvs.profile.model.User;
-import lombok.Getter;
-import lombok.Setter;
+import club.tempvs.profile.dto.TempvsPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component
-@RequestScope
 public class UserHolder {
 
-    @Getter
-    @Setter
-    private User user;
+    public Long getUserId() {
+        TempvsPrincipal principal = (TempvsPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        return principal.getUserId();
+    }
 }

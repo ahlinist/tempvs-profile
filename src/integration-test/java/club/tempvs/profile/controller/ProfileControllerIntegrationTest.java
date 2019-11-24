@@ -51,7 +51,7 @@ public class ProfileControllerIntegrationTest {
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
         String userInfoValue = buildUserInfoValue(1L);
 
-        mvc.perform(post("/api/profile")
+        mvc.perform(post("/profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)
@@ -68,7 +68,7 @@ public class ProfileControllerIntegrationTest {
         File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
 
-        mvc.perform(post("/api/profile")
+        mvc.perform(post("/profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)
@@ -82,7 +82,7 @@ public class ProfileControllerIntegrationTest {
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
         String userInfoValue = buildUserInfoValue(1L);
 
-        mvc.perform(post("/api/profile")
+        mvc.perform(post("/profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)
@@ -90,7 +90,7 @@ public class ProfileControllerIntegrationTest {
                 .header(AUTHORIZATION_HEADER, TOKEN))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/api/profile")
+        mvc.perform(post("/profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)
@@ -107,7 +107,7 @@ public class ProfileControllerIntegrationTest {
 
         Profile profile = entityHelper.createProfile(userId, firstName, lastName, Type.USER);
 
-        mvc.perform(get("/api/profile/" + profile.getId())
+        mvc.perform(get("/profile/" + profile.getId())
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION_HEADER, TOKEN))
@@ -126,7 +126,7 @@ public class ProfileControllerIntegrationTest {
 
         entityHelper.createProfile(userId, firstName, lastName, Type.USER);
 
-        mvc.perform(get("/api/profile/")
+        mvc.perform(get("/profile/")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .header(USER_INFO_HEADER, userInfoValue)
@@ -140,7 +140,7 @@ public class ProfileControllerIntegrationTest {
     @Test
     public void testGetUserProfileBeingUnauthenticated() throws Exception {
 
-        mvc.perform(get("/api/profile")
+        mvc.perform(get("/profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION_HEADER, TOKEN))
@@ -152,7 +152,7 @@ public class ProfileControllerIntegrationTest {
         Long userId = 1L;
         String userInfoValue = buildUserInfoValue(userId);
 
-        mvc.perform(get("/api/profile")
+        mvc.perform(get("/profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .header(USER_INFO_HEADER, userInfoValue)

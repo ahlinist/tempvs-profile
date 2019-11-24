@@ -1,8 +1,6 @@
 package club.tempvs.profile.filter;
 
-import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.dto.TempvsPrincipal;
-import club.tempvs.profile.model.User;
 import club.tempvs.profile.token.AuthToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,6 @@ public class AuthFilter extends GenericFilterBean {
 
     private static final String USER_INFO_HEADER = "User-Info";
 
-    private final UserHolder userHolder;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -48,9 +45,6 @@ public class AuthFilter extends GenericFilterBean {
             AuthToken authToken = new AuthToken(principal, authorities);
             SecurityContextHolder.getContext()
                     .setAuthentication(authToken);
-
-            User user = new User(principal.getUserId(), principal.getCurrentProfileId(), principal.getLang());
-            userHolder.setUser(user);
 
             Optional.ofNullable(principal.getLang())
                     .map(Locale::new)

@@ -5,7 +5,6 @@ import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.dao.ProfileRepository;
 import club.tempvs.profile.domain.Profile;
 import club.tempvs.profile.domain.Profile.Type;
-import club.tempvs.profile.model.User;
 import club.tempvs.profile.service.ProfileService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
@@ -26,8 +25,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile create(Profile profile) {
-        User user = userHolder.getUser();
-        Long userId = user.getId();
+        Long userId = userHolder.getUserId();
 
         if (profile.getType() == Type.USER) {
             profileValidator.validateUserProfile(profile);
@@ -57,8 +55,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile getUserProfile() {
-        User user = userHolder.getUser();
-        return findUserProfileByUserId(user.getId())
+        Long userId = userHolder.getUserId();
+        return findUserProfileByUserId(userId)
                 .get();
     }
 

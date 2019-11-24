@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
 public class ProfileController {
 
     private final ConversionService mvcConversionService;

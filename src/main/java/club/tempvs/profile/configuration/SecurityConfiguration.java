@@ -1,6 +1,5 @@
 package club.tempvs.profile.configuration;
 
-import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.filter.AuthFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +18,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final UserHolder userHolder;
     private final ObjectMapper objectMapper;
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .addFilterBefore(new AuthFilter(userHolder, objectMapper),BasicAuthenticationFilter.class)
+                .addFilterBefore(new AuthFilter(objectMapper),BasicAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/api/profile/{(.|\\s)*\\S(.|\\s)*}").permitAll()
+                .antMatchers(HttpMethod.GET,"/profile/{(.|\\s)*\\S(.|\\s)*}").permitAll()
                 .anyRequest().fullyAuthenticated()
             .and()
                 .exceptionHandling()
