@@ -47,11 +47,11 @@ public class ProfileControllerIntegrationTest {
 
     @Test
     public void testCreateUserProfile() throws Exception {
-        File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
+        File createProfileFile = ResourceUtils.getFile("classpath:profile/create-user-profile.json");
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
         String userInfoValue = buildUserInfoValue(1L);
 
-        mvc.perform(post("/profile")
+        mvc.perform(post("/user-profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)
@@ -65,7 +65,7 @@ public class ProfileControllerIntegrationTest {
 
     @Test
     public void testCreateUserProfileBeingUnauthenticated() throws Exception {
-        File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
+        File createProfileFile = ResourceUtils.getFile("classpath:profile/create-user-profile.json");
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
 
         mvc.perform(post("/profile")
@@ -78,11 +78,11 @@ public class ProfileControllerIntegrationTest {
 
     @Test
     public void testCreateSecondUserProfile() throws Exception {
-        File createProfileFile = ResourceUtils.getFile("classpath:profile/create.json");
+        File createProfileFile = ResourceUtils.getFile("classpath:profile/create-user-profile.json");
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()));
         String userInfoValue = buildUserInfoValue(1L);
 
-        mvc.perform(post("/profile")
+        mvc.perform(post("/user-profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)
@@ -90,7 +90,7 @@ public class ProfileControllerIntegrationTest {
                 .header(AUTHORIZATION_HEADER, TOKEN))
                 .andExpect(status().isOk());
 
-        mvc.perform(post("/profile")
+        mvc.perform(post("/user-profile")
                 .accept(APPLICATION_JSON_VALUE)
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(createProfileJson)

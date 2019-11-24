@@ -24,24 +24,30 @@ public class ProfileServiceImpl implements ProfileService {
     private final UserHolder userHolder;
 
     @Override
-    public Profile create(Profile profile) {
+    public Profile createUserProfile(Profile profile) {
+        profileValidator.validateUserProfile(profile);
         Long userId = userHolder.getUserId();
 
-        if (profile.getType() == Type.USER) {
-            profileValidator.validateUserProfile(profile);
-
-            if(findUserProfileByUserId(userId).isPresent()) {
-                throw new IllegalStateException(String.format("User with id %d already has user profile", userId));
-            }
+        if(findUserProfileByUserId(userId).isPresent()) {
+            throw new IllegalStateException(String.format("User with id %d already has user profile", userId));
         }
 
-        if (profile.getType() == Type.CLUB) {
-            if(countClubProfilesByUserId(userId) >= MAX_CLUB_PROFILE_COUNT) {
-                throw new IllegalStateException(String.format("User with id %d has too many club profiles", userId));
-            }
+        profile.setType(Type.USER);
+        profile.setUserId(userId);
+        profile.setIsActive(Boolean.TRUE);
+
+        return save(profile);
+    }
+
+    @Override
+    public Profile createClubProfile(Profile profile) {
+        Long userId = userHolder.getUserId();
+
+        if(countClubProfilesByUserId(userId) >= MAX_CLUB_PROFILE_COUNT) {
+            throw new IllegalStateException(String.format("User with id %d has too many club profiles", userId));
         }
 
-        profile.setId(null);
+        profile.setType(Type.CLUB);
         profile.setUserId(userId);
         profile.setIsActive(Boolean.TRUE);
 

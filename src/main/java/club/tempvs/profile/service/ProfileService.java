@@ -4,7 +4,9 @@ import club.tempvs.profile.domain.Profile;
 
 public interface ProfileService {
 
-    Profile create(Profile profile);
+    Profile createUserProfile(Profile profile);
+
+    Profile createClubProfile(Profile profile);
 
     Profile get(Long id);
 

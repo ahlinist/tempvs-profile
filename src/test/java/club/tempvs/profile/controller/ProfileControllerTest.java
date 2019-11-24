@@ -30,15 +30,15 @@ public class ProfileControllerTest {
     private ProfileDto profileDto;
 
     @Test
-    public void testCreate() {
+    public void testCreateUserProfile() {
         when(conversionService.convert(profileDto, Profile.class)).thenReturn(profile);
-        when(profileService.create(profile)).thenReturn(profile);
+        when(profileService.createUserProfile(profile)).thenReturn(profile);
         when(conversionService.convert(profile, ProfileDto.class)).thenReturn(profileDto);
 
         ProfileDto result = profileController.create(profileDto);
 
         verify(conversionService).convert(profileDto, Profile.class);
-        verify(profileService).create(profile);
+        verify(profileService).createUserProfile(profile);
         verify(conversionService).convert(profile, ProfileDto.class);
         verifyNoMoreInteractions(conversionService, profileService);
 
@@ -63,8 +63,6 @@ public class ProfileControllerTest {
 
     @Test
     public void testGetUserProfile() {
-        Long userId = 1L;
-
         when(profileService.getUserProfile()).thenReturn(profile);
         when(conversionService.convert(profile, ProfileDto.class)).thenReturn(profileDto);
 

@@ -39,11 +39,10 @@ public class ProfileServiceTest {
         Long userId = 1L;
 
         when(userHolder.getUserId()).thenReturn(userId);
-        when(profile.getType()).thenReturn(Type.CLUB);
         when(profileRepository.countByTypeAndUserId(Type.CLUB, userId)).thenReturn(9);
         when(profileRepository.save(profile)).thenReturn(profile);
 
-        Profile result = profileService.create(profile);
+        Profile result = profileService.createClubProfile(profile);
 
         verify(userHolder).getUserId();
         verify(profileRepository).countByTypeAndUserId(Type.CLUB, userId);
@@ -58,11 +57,10 @@ public class ProfileServiceTest {
         Long userId = 1L;
 
         when(userHolder.getUserId()).thenReturn(userId);
-        when(profile.getType()).thenReturn(Type.USER);
         when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.empty());
         when(profileRepository.save(profile)).thenReturn(profile);
 
-        Profile result = profileService.create(profile);
+        Profile result = profileService.createUserProfile(profile);
 
         verify(userHolder).getUserId();
         verify(profileRepository).findByTypeAndUserId(Type.USER, userId);
@@ -78,10 +76,9 @@ public class ProfileServiceTest {
         Long userId = 1L;
 
         when(userHolder.getUserId()).thenReturn(userId);
-        when(profile.getType()).thenReturn(Type.USER);
         when(profileRepository.findByTypeAndUserId(Type.USER, userId)).thenReturn(Optional.of(profile));
 
-        profileService.create(profile);
+        profileService.createUserProfile(profile);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -89,10 +86,9 @@ public class ProfileServiceTest {
         Long userId = 1L;
 
         when(userHolder.getUserId()).thenReturn(userId);
-        when(profile.getType()).thenReturn(Type.CLUB);
         when(profileRepository.countByTypeAndUserId(Type.CLUB, userId)).thenReturn(10);
 
-        profileService.create(profile);
+        profileService.createClubProfile(profile);
     }
 
     @Test
