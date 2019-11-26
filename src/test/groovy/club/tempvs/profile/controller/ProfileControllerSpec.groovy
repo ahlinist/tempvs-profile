@@ -8,7 +8,6 @@ import spock.lang.Subject
 
 class ProfileControllerSpec extends Specification {
 
-
     ConversionService mvcConversionService = Mock ConversionService
     ProfileService profileService = Mock ProfileService
 

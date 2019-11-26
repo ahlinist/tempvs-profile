@@ -19,9 +19,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     private static final int MAX_CLUB_PROFILE_COUNT = 10;
 
-    private final ProfileRepository profileRepository;
-    private final ProfileValidator profileValidator;
     private final UserHolder userHolder;
+    private final ProfileValidator profileValidator;
+    private final ProfileRepository profileRepository;
 
     @Override
     public Profile createUserProfile(Profile profile) {
