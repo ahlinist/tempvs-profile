@@ -50,7 +50,7 @@ class ProfileServiceSpec extends Specification {
         then:
         1 * profileValidator.validateUserProfile(profile)
         1 * userHolder.userId >> userId
-        1 * profileRepository.findByTypeAndUserId(Type.USER, userId) >> Optional.empty()
+        1 * profileRepository.findAllByTypeAndUserId(Type.USER, userId) >> []
         1 * profile.setType(Type.USER)
         1 * profile.setUserId(userId)
         1 * profile.setIsActive(Boolean.TRUE)
@@ -71,7 +71,7 @@ class ProfileServiceSpec extends Specification {
         then:
         1 * profileValidator.validateUserProfile(profile)
         1 * userHolder.userId >> userId
-        1 * profileRepository.findByTypeAndUserId(Type.USER, userId) >> Optional.of(profile)
+        1 * profileRepository.findAllByTypeAndUserId(Type.USER, userId) >> [profile]
         0 * _
 
         and:
@@ -136,7 +136,7 @@ class ProfileServiceSpec extends Specification {
 
         then:
         1 * userHolder.userId >> userId
-        1 * profileRepository.findByTypeAndUserId(Type.USER, userId) >> Optional.of(profile)
+        1 * profileRepository.findAllByTypeAndUserId(Type.USER, userId) >> [profile]
         0 * _
 
         and:
@@ -148,15 +148,30 @@ class ProfileServiceSpec extends Specification {
         Long userId = 1L
 
         when:
-        Profile result = profileService.userProfile
+        profileService.userProfile
 
         then:
         1 * userHolder.userId >> userId
-        1 * profileRepository.findByTypeAndUserId(Type.USER, userId) >> Optional.empty()
+        1 * profileRepository.findAllByTypeAndUserId(Type.USER, userId) >> []
         0 * _
 
         and:
         Exception exception = thrown NoSuchElementException
         exception.message == 'No value present'
+    }
+
+    def "get club profiles for user"() {
+        given:
+        Long userId = 1L
+
+        when:
+        Profile result = profileService.getClubProfiles(userId)
+
+        then:
+        1 * profileRepository.findAllByTypeAndUserId(Type.CLUB, userId) >> [profile]
+        0 * _
+
+        and:
+        result == [profile]
     }
 }

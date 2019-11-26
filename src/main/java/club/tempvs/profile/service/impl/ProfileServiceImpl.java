@@ -11,7 +11,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class ProfileServiceImpl implements ProfileService {
         profileValidator.validateUserProfile(profile);
         Long userId = userHolder.getUserId();
 
-        if(findUserProfileByUserId(userId).isPresent()) {
+        if(!findUserProfileByUserId(userId).isEmpty()) {
             throw new IllegalStateException(String.format("User with id %d already has user profile", userId));
         }
 
@@ -63,7 +63,17 @@ public class ProfileServiceImpl implements ProfileService {
     public Profile getUserProfile() {
         Long userId = userHolder.getUserId();
         return findUserProfileByUserId(userId)
+                .stream()
+                .findAny()
                 .get();
+    }
+
+    @Override
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
+    })
+    public List<Profile> getClubProfiles(Long userId) {
+        return profileRepository.findAllByTypeAndUserId(Type.CLUB, userId);
     }
 
     @HystrixCommand(commandProperties = {
@@ -84,8 +94,8 @@ public class ProfileServiceImpl implements ProfileService {
     @HystrixCommand(commandProperties = {
             @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     })
-    private Optional<Profile> findUserProfileByUserId(Long userId) {
-        return profileRepository.findByTypeAndUserId(Type.USER, userId);
+    private List<Profile> findUserProfileByUserId(Long userId) {
+        return profileRepository.findAllByTypeAndUserId(Type.USER, userId);
     }
 
     @HystrixCommand(commandProperties = {

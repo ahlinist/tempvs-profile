@@ -29,6 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET,"/profile/{(.|\\s)*\\S(.|\\s)*}").permitAll()
+                .antMatchers(HttpMethod.GET,"/club-profile").permitAll()
                 .anyRequest().fullyAuthenticated()
             .and()
                 .exceptionHandling()

@@ -1,5 +1,7 @@
 package club.tempvs.profile.controller;
 
+import static java.util.stream.Collectors.toList;
+
 import club.tempvs.profile.domain.Profile;
 import club.tempvs.profile.dto.ProfileDto;
 import club.tempvs.profile.dto.validation.Scope;
@@ -8,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,5 +44,13 @@ public class ProfileController {
     public ProfileDto getUserProfile() {
         Profile profile = profileService.getUserProfile();
         return mvcConversionService.convert(profile, ProfileDto.class);
+    }
+
+    @GetMapping("/club-profile")
+    public List<ProfileDto> getClubProfiles(@RequestParam Long userId) {
+        return profileService.getClubProfiles(userId)
+                .stream()
+                .map(profile -> mvcConversionService.convert(profile, ProfileDto.class))
+                .collect(toList());
     }
 }

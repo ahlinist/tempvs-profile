@@ -40,7 +40,7 @@ class ProfileControllerIntegrationSpec extends Specification {
     @Autowired
     private ProfileRepository profileRepository
 
-    def "test create user profile"() {
+    def "create user profile"() {
         given:
         File createProfileFile = ResourceUtils.getFile("classpath:profile/create-user-profile.json")
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()))
@@ -60,7 +60,7 @@ class ProfileControllerIntegrationSpec extends Specification {
 
     }
 
-    def "test create club profile"() {
+    def "create club profile"() {
         given:
         File createProfileFile = ResourceUtils.getFile("classpath:profile/create-club-profile.json")
         String createProfileJson = new String(Files.readAllBytes(createProfileFile.toPath()))
@@ -181,6 +181,36 @@ class ProfileControllerIntegrationSpec extends Specification {
                 .header(USER_INFO_HEADER, userInfoValue)
                 .header(AUTHORIZATION_HEADER, TOKEN))
                     .andExpect(status().isNotFound())
+    }
+
+    def "get club profiles"() {
+        given:
+        Long userId = 1L
+        String firstName1 = "firstName1"
+        String lastName1 = "lastName1"
+        String firstName2 = "firstName2"
+        String lastName2 = "lastName2"
+
+        and:
+        Profile profile1 = new Profile(firstName: firstName1, lastName: lastName1, userId: userId, type: Type.CLUB)
+        Profile profile2 = new Profile(firstName: firstName2, lastName: lastName2, userId: userId, type: Type.CLUB)
+        profileRepository.save(profile1)
+        profileRepository.save(profile2)
+
+        expect:
+        mvc.perform(get("/club-profile?userId=" + userId)
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath('$[0]firstName', is(firstName1)))
+                    .andExpect(jsonPath('$[0]lastName', is(lastName1)))
+                    .andExpect(jsonPath('$[0]userId', is(userId.toInteger())))
+                    .andExpect(jsonPath('$[0]type', is('CLUB')))
+                    .andExpect(jsonPath('$[1]firstName', is(firstName2)))
+                    .andExpect(jsonPath('$[1]lastName', is(lastName2)))
+                    .andExpect(jsonPath('$[1]userId', is(userId.toInteger())))
+                    .andExpect(jsonPath('$[1]type', is('CLUB')))
     }
 
     private String buildUserInfoValue(Long id) throws Exception {

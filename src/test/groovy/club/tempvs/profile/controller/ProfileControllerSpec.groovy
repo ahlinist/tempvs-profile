@@ -1,4 +1,5 @@
-import club.tempvs.profile.controller.ProfileController
+package club.tempvs.profile.controller
+
 import club.tempvs.profile.domain.Profile
 import club.tempvs.profile.dto.ProfileDto
 import club.tempvs.profile.service.ProfileService
@@ -17,7 +18,7 @@ class ProfileControllerSpec extends Specification {
     Profile profile = Mock Profile
     ProfileDto profileDto = Mock ProfileDto
 
-    def "test create user profile"() {
+    def "create user profile"() {
         when:
         ProfileDto result = profileController.createUserProfile(profileDto)
 
@@ -31,7 +32,7 @@ class ProfileControllerSpec extends Specification {
         result == profileDto
     }
 
-    def "test create club profile"() {
+    def "create club profile"() {
         when:
         ProfileDto result = profileController.createClubProfile(profileDto)
 
@@ -45,7 +46,7 @@ class ProfileControllerSpec extends Specification {
         result == profileDto
     }
 
-    def "test get profile"() {
+    def "get profile"() {
         given:
         Long id = 1
 
@@ -61,7 +62,7 @@ class ProfileControllerSpec extends Specification {
         result == profileDto
     }
 
-    def "test get user profile"() {
+    def "get user profile"() {
         when:
         ProfileDto result = profileController.userProfile
 
@@ -72,5 +73,22 @@ class ProfileControllerSpec extends Specification {
 
         and:
         result == profileDto
+    }
+
+    def "get club profiles"() {
+        given:
+        Long userId = 1L
+        List<ProfileDto> profileDtos = [profileDto]
+
+        when:
+        List<ProfileDto> result = profileController.getClubProfiles(userId)
+
+        then:
+        1 * profileService.getClubProfiles(userId) >> [profile]
+        1 * mvcConversionService.convert(profile, ProfileDto) >> profileDto
+        0 * _
+
+        and:
+        result == profileDtos
     }
 }

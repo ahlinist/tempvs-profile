@@ -2,6 +2,8 @@ package club.tempvs.profile.service;
 
 import club.tempvs.profile.domain.Profile;
 
+import java.util.List;
+
 public interface ProfileService {
 
     Profile createUserProfile(Profile profile);
@@ -11,4 +13,6 @@ public interface ProfileService {
     Profile get(Long id);
 
     Profile getUserProfile();
+
+    List<Profile> getClubProfiles(Long userId);
 }
