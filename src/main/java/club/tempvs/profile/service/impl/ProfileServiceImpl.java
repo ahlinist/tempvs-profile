@@ -5,10 +5,13 @@ import club.tempvs.profile.component.UserHolder;
 import club.tempvs.profile.dao.ProfileRepository;
 import club.tempvs.profile.domain.Profile;
 import club.tempvs.profile.domain.Profile.Type;
+import club.tempvs.profile.dto.ImageDto;
+import club.tempvs.profile.service.ImageService;
 import club.tempvs.profile.service.ProfileService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +21,12 @@ import java.util.List;
 public class ProfileServiceImpl implements ProfileService {
 
     private static final int MAX_CLUB_PROFILE_COUNT = 10;
+    private static final String PROFILE_ENTITY_IDENTIFIER = "profile";
 
     private final UserHolder userHolder;
     private final ProfileValidator profileValidator;
     private final ProfileRepository profileRepository;
+    private final ImageService imageService;
 
     @Override
     public Profile createUserProfile(Profile profile) {
@@ -66,6 +71,22 @@ public class ProfileServiceImpl implements ProfileService {
                 .stream()
                 .findAny()
                 .get();
+    }
+
+    @Override
+    public void uploadAvatar(Long profileId, ImageDto imageDto) {
+        Long currentUserId = userHolder.getUserId();
+        Long userId = profileRepository.findById(profileId)
+                .map(Profile::getUserId)
+                .get();
+
+        if (!userId.equals(currentUserId)) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        imageDto.setBelongsTo(PROFILE_ENTITY_IDENTIFIER);
+        imageDto.setEntityId(profileId);
+        imageService.store(imageDto);
     }
 
     @Override

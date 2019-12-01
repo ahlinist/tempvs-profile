@@ -213,6 +213,47 @@ class ProfileControllerIntegrationSpec extends Specification {
                     .andExpect(jsonPath('$[1]type', is('CLUB')))
     }
 
+    def "upload avatar"() {
+        given:
+        Long userId = 1L
+        File avatarFile = ResourceUtils.getFile('classpath:profile/upload-avatar.json')
+        String avatarFileJson = new String(Files.readAllBytes(avatarFile.toPath()))
+        String userInfoValue = buildUserInfoValue(userId)
+
+        and:
+        Profile profile = new Profile(firstName: 'firstName', lastName: 'lastName', userId: userId, type: Type.USER)
+        profileRepository.save(profile)
+
+        expect:
+        mvc.perform(post('/profile/' + profile.id + '/avatar')
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(avatarFileJson)
+                .header(USER_INFO_HEADER, userInfoValue)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                    .andExpect(status().isOk())
+    }
+
+    def "upload avatar for wrong profile"() {
+        given:
+        File avatarFile = ResourceUtils.getFile('classpath:profile/upload-avatar.json')
+        String avatarFileJson = new String(Files.readAllBytes(avatarFile.toPath()))
+        String userInfoValue = buildUserInfoValue(1L)
+
+        and:
+        Profile profile = new Profile(firstName: 'firstName', lastName: 'lastName', userId: 2L, type: Type.USER)
+        profileRepository.save(profile)
+
+        expect:
+        mvc.perform(post('/profile/' + profile.id + '/avatar')
+                .accept(APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(avatarFileJson)
+                .header(USER_INFO_HEADER, userInfoValue)
+                .header(AUTHORIZATION_HEADER, TOKEN))
+                .andExpect(status().isForbidden())
+    }
+
     private String buildUserInfoValue(Long id) throws Exception {
         UserInfoDto userInfoDto = new UserInfoDto(userId: id, lang: Locale.ENGLISH.language)
         objectMapper.writeValueAsString(userInfoDto)

@@ -5,20 +5,25 @@ import club.tempvs.profile.component.UserHolder
 import club.tempvs.profile.dao.ProfileRepository
 import club.tempvs.profile.domain.Profile
 import club.tempvs.profile.domain.Profile.Type
+import club.tempvs.profile.dto.ImageDto
 import club.tempvs.profile.service.impl.ProfileServiceImpl
 import spock.lang.Specification
 import spock.lang.Subject
+
+import org.springframework.security.access.AccessDeniedException
 
 class ProfileServiceSpec extends Specification {
 
     UserHolder userHolder = Mock UserHolder
     ProfileValidator profileValidator = Mock ProfileValidator
     ProfileRepository profileRepository = Mock ProfileRepository
+    ImageService imageService = Mock ImageService
 
     @Subject
-    ProfileService profileService = new ProfileServiceImpl(userHolder, profileValidator, profileRepository)
+    ProfileService profileService = new ProfileServiceImpl(userHolder, profileValidator, profileRepository, imageService)
 
     Profile profile = Mock Profile
+    ImageDto imageDto = Mock ImageDto
 
     def "create club profile"() {
         given:
@@ -165,7 +170,7 @@ class ProfileServiceSpec extends Specification {
         Long userId = 1L
 
         when:
-        Profile result = profileService.getClubProfiles(userId)
+        List<Profile> result = profileService.getClubProfiles(userId)
 
         then:
         1 * profileRepository.findAllByTypeAndUserId(Type.CLUB, userId) >> [profile]
@@ -173,5 +178,43 @@ class ProfileServiceSpec extends Specification {
 
         and:
         result == [profile]
+    }
+
+    def "add avatar"() {
+        given:
+        Long profileId = 1L
+        Long userId = 2L
+
+        when:
+        profileService.uploadAvatar(profileId, imageDto)
+
+        then:
+        1 * userHolder.userId >> userId
+        1 * profileRepository.findById(profileId) >> Optional.of(profile)
+        1 * profile.userId >> userId
+        1 * imageDto.setBelongsTo('profile')
+        1 * imageDto.setEntityId(profileId)
+        1 * imageService.store(imageDto)
+        0 * _
+    }
+
+    def "add avatar for wrong user"() {
+        given:
+        Long profileId = 1L
+        Long userId = 2L
+        Long profileUserId = 3L
+
+        when:
+        profileService.uploadAvatar(profileId, imageDto)
+
+        then:
+        1 * userHolder.userId >> userId
+        1 * profileRepository.findById(profileId) >> Optional.of(profile)
+        1 * profile.userId >> profileUserId
+        0 * _
+
+        and:
+        Exception exception = thrown AccessDeniedException
+        exception.message == 'Access denied'
     }
 }

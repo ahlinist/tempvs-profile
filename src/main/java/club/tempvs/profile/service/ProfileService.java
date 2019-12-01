@@ -1,6 +1,7 @@
 package club.tempvs.profile.service;
 
 import club.tempvs.profile.domain.Profile;
+import club.tempvs.profile.dto.ImageDto;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface ProfileService {
     Profile getUserProfile();
 
     List<Profile> getClubProfiles(Long userId);
+
+    void uploadAvatar(Long profileId, ImageDto imageDto);
 }

@@ -1,6 +1,7 @@
 package club.tempvs.profile.controller
 
 import club.tempvs.profile.domain.Profile
+import club.tempvs.profile.dto.ImageDto
 import club.tempvs.profile.dto.ProfileDto
 import club.tempvs.profile.service.ProfileService
 import org.springframework.core.convert.ConversionService
@@ -17,6 +18,7 @@ class ProfileControllerSpec extends Specification {
 
     Profile profile = Mock Profile
     ProfileDto profileDto = Mock ProfileDto
+    ImageDto imageDto = Mock ImageDto
 
     def "create user profile"() {
         when:
@@ -90,5 +92,17 @@ class ProfileControllerSpec extends Specification {
 
         and:
         result == profileDtos
+    }
+
+    def "upload avatar"() {
+        given:
+        Long profileId = 1L
+
+        when:
+        profileController.uploadAvatar(profileId, imageDto)
+
+        then:
+        1 * profileService.uploadAvatar(profileId, imageDto)
+        0 * _
     }
 }

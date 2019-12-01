@@ -3,6 +3,7 @@ package club.tempvs.profile.controller;
 import static java.util.stream.Collectors.toList;
 
 import club.tempvs.profile.domain.Profile;
+import club.tempvs.profile.dto.ImageDto;
 import club.tempvs.profile.dto.ProfileDto;
 import club.tempvs.profile.dto.validation.Scope;
 import club.tempvs.profile.service.ProfileService;
@@ -52,5 +53,10 @@ public class ProfileController {
                 .stream()
                 .map(profile -> mvcConversionService.convert(profile, ProfileDto.class))
                 .collect(toList());
+    }
+
+    @PostMapping("/profile/{profileId}/avatar")
+    public void uploadAvatar(@PathVariable Long profileId, @RequestBody ImageDto imageDto) {
+        profileService.uploadAvatar(profileId, imageDto);
     }
 }
